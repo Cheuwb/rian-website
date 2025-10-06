@@ -6,10 +6,9 @@ import Link from "next/link";
 import Navbar from "./components/Navbar";
 import DraggableWindow from "./components/DraggableWindow";
 import { AnimatePresence } from "framer-motion";
+import ThemeToggle from "./components/ToggleTheme"
 
 export default function Home() {
-    // light / dark theme state
-    const [theme, setTheme] = useState("light");
     // open windows state management
     const [openWindows, setOpenWindows] = useState([]);
     // closed windows x,y coordinates to for re-open state
@@ -18,11 +17,11 @@ export default function Home() {
     const viewportRef = useRef(null);
 
     const WINDOW_CONFIG = {
-        'About Brian': { width: 'w-[400px]', height: 'h-[300px]'},
-        'Projects': { width: 'w-[400px]', height: 'h-[300px]'},
-        'Contact': { width: 'w-[400px]', height: 'h-[300px]'},
-        'Social Links': { width: 'w-[400px]', height: 'h-[300px]'},
-        'default': { width: 'w-[800px]', height: 'h-[500px]'}
+        'About Brian': { width: 'w-[800px]', height: 'h-[450px]', windowId: 1},
+        'Projects': { width: 'w-[600px]', height: 'h-[340px]', windowId: 6},
+        'Contact': { width: 'w-[575px]', height: 'h-[650px]', windowId: -4},
+        'Social Links': { width: 'w-[550px]', height: 'h-[450px]', windowId: -2},
+        'default': { width: 'w-[800px]', height: 'h-[500px], windowId: 1'}
 
     }
     // function open new window
@@ -52,65 +51,19 @@ export default function Home() {
         setOpenWindows((prev) => prev.filter((window) => window.id !== id));
     }
 
-  useEffect(() => {
-    const stored = localStorage.getItem("theme");
-    if (stored === "dark") {
-      setTheme("dark");
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
-
-  function toggleTheme() {
-    if (theme === "dark") {
-      document.documentElement.classList.remove("dark");
-      setTheme("light");
-      localStorage.setItem("theme", "light");
-    } else {
-      document.documentElement.classList.add("dark");
-      setTheme("dark");
-      localStorage.setItem("theme", "dark");
-    }
-  }
-
   return (
-    <div className="bg-white dark:bg-secondary-dark min-h-screen">
-      <header className="p-4 flex justify-end">
-        <button
-          className="text-gray-800 dark:text-gray-200"
-          onClick={toggleTheme}
-        >
-          🌓
-        </button>
+    <div 
+    ref = {viewportRef}
+    className="bg-white dark:bg-secondary-dark h-screen flex flex-col">
+      <header className="p-4 flex flex-col justify-end">
+      <ThemeToggle/>
       </header>
 
       <div
-        ref = {viewportRef}
         className="flex flex-col items-center justify-center
           w-full h-[calc(100vh-80px)] 
           bg-white dark:bg-secondary-dark"
       >
-        {/* Star icon / download button top */}
-        <div className="absolute -top-[var(--star-margin)] left-0 group">
-          <button className="flex flex-col items-center justify-center pointer-events-auto">
-            <Image
-              src="/images/icon_star.webp"
-              alt="downloads icon"
-              width={128}
-              height={128}
-              className="block dark:hidden w-[var(--icon-button-width)] duration-200 cursor-pointer group-hover:scale-110 active:scale-75 group-hover:animate-bounce group-hover:drop-shadow-star"
-            />
-            <Image
-              src="/images/icon_star_dark.webp"
-              alt="downloads icon"
-              width={128}
-              height={128}
-              className="hidden dark:block w-[var(--icon-button-width)] duration-200 cursor-pointer group-hover:scale-110 active:scale-75 group-hover:animate-bounce group-hover:drop-shadow-star"
-            />
-            <div className="absolute mt-8 w-max font-mono font-bold text-primary opacity-0 group-hover:opacity-100">
-              fun stuff
-            </div>
-          </button>
-        </div>
 
         <div className="flex flex-col w-[800px] h-auto m-8">
           {/*Title tab */}
@@ -129,10 +82,10 @@ export default function Home() {
           <div className="justify-center items-center flex flex-col bg-white dark:bg-gray-800 border-2 border-gray-400 dark:border-black rounded-b-xl shadow-xl p-36">
             {/* Main text */}
             <p
-              className="text-center font-medium font-body 
+              className="text-center font-medium font-body text-6xl
                     text-[var(--title-size)] pt-[var(--title-padding)] dark:text-gray-100"
             >
-              Hi! I'm <span className="text-primary font-bold ">Brian</span>
+              Hi! I'm <span className="text-primary !text-[#275efe] font-bold ">Brian</span>
             </p>
             <h2 className="text-center mt-4 mb-1 dark:text-gray-100">I code for fun, play sports, and enjoy puzzle games.</h2>
             {/* Icon menu */}
@@ -159,6 +112,7 @@ export default function Home() {
 
                     initialX={lastPosition ? lastPosition.x : undefined}
                     initialY={lastPosition ? lastPosition.y : undefined}
+                    windowId={config.windowId}
                 >
                     {win.content()}
                 </DraggableWindow>

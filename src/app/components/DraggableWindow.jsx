@@ -3,6 +3,14 @@
 import { motion } from "framer-motion";
 import React, { useState, useEffect} from "react"
 
+const getInitialWindowPosition = (windowId) => {
+    const offset = (windowId - 1) * 20;
+    return {
+        top: `calc(25% + ${offset}px)`,
+        left: `calc(25% + ${offset}px)`,
+    };
+};
+
 const DraggableWindow = ({
     title, 
     children, 
@@ -11,7 +19,8 @@ const DraggableWindow = ({
     windowWidthClass, 
     windowHeightClass,
     initialX, 
-    initialY
+    initialY,
+    windowId
  }) => {
 
     const dynamicClassNames = `${windowWidthClass} ${windowHeightClass}`
@@ -34,6 +43,8 @@ const DraggableWindow = ({
         setPosition({x: info.point.x, y: info.point.y});
     }
 
+    const initialPosition = getInitialWindowPosition(windowId);
+
     return (
         <motion.div
             drag
@@ -48,10 +59,15 @@ const DraggableWindow = ({
             initial={initialPositionProps}
             onDragEnd={handleDragEnd}
 
-            className={`absolute top-1/4 left-1/3 transform -translate-x-1/2 -translate-y-1/2 z-50 
+            className={`absolute z-50 
                 flex flex-col rounded-xl cursor-grab active:cursor-grabbing
-                bg-white shadow-2xl
+                bg-white shadow-2xl dark:bg-gray-800
                 ${dynamicClassNames}`}
+
+                style={{
+                    top: initialPosition.top,
+                    left: initialPosition.left,
+                }}
         >
             <div className="rounded-t-lg font-mono flex bg-gray-700 dark:border-x-2 dark:border-t-2 dark:border-black text-white dark:text-black dark:bg-white text-xl px-6 py-3 items-center">
                 {/* Traffic Lights Container */}
@@ -66,10 +82,16 @@ const DraggableWindow = ({
 
                 {/* Window Title */}
                 <span className="flex-1 text-center font-bold">{title}</span>
+                {/* 3. Spacer Offset for Title Center */}
+                <div className="flex space-x-2 mr-4 invisible">
+                    <div className="w-3 h-3"></div>
+                    <div className="w-3 h-3"></div>
+                    <div className="w-3 h-3"></div>
+                </div>
             </div>
 
             {/* Window Body - same styling */}
-            <div className="justify-start items-start flex flex-col bg-white dark:bg-gray-800 rounded-b-xl p-8 overflow-y-auto">
+            <div className="justify-start items-start flex flex-col bg-white dark:bg-gray-800 dark:text-gray-100 rounded-b-xl p-8 overflow-y-auto">
                 {children}
             </div>
         </motion.div>

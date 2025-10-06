@@ -15,10 +15,6 @@
 }
 
 @layer base {
-    p {
-        @apply text-6xl
-    }
-
     h2 {
         @apply text-xl
     }
