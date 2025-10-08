@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
-import React, { useState, useEffect} from "react"
+import { motion, useDragControls } from "framer-motion";
+import React, { useState, useEffect, useRef} from "react"
 
 const getInitialWindowPosition = (windowId) => {
     const offset = (windowId - 1) * 20;
@@ -44,6 +44,11 @@ const DraggableWindow = ({
     }
 
     const initialPosition = getInitialWindowPosition(windowId);
+    const controls = useDragControls();
+
+    function startDrag(event) {
+        controls.start(event);
+    }
 
     return (
         <motion.div
@@ -55,9 +60,10 @@ const DraggableWindow = ({
             animate={{scale: 1, opacity: 1}}
             exit={{scale: 0.8, opacity:0 }}
             transition={{duration: 0.3}}
-
             initial={initialPositionProps}
             onDragEnd={handleDragEnd}
+            dragListener={false}
+            dragControls={controls}
 
             className={`absolute z-50 
                 flex flex-col rounded-xl cursor-grab active:cursor-grabbing
@@ -69,7 +75,11 @@ const DraggableWindow = ({
                     left: initialPosition.left,
                 }}
         >
-            <div className="rounded-t-lg font-mono flex bg-gray-700 dark:border-x-2 dark:border-t-2 dark:border-black text-white dark:text-black dark:bg-white text-xl px-6 py-3 items-center">
+            <div 
+                className="rounded-t-lg font-mono flex bg-gray-700 dark:border-x-2 dark:border-t-2 dark:border-black
+                 text-white dark:text-black dark:bg-white text-xl px-6 py-3 items-center"
+                onPointerDown={startDrag}
+            >
                 {/* Traffic Lights Container */}
                 <div className="flex space-x-2 mr-4">
                 {/* Red Dot (Close Button) */}
@@ -91,7 +101,10 @@ const DraggableWindow = ({
             </div>
 
             {/* Window Body - same styling */}
-            <div className="justify-start items-start flex flex-col bg-white dark:bg-gray-800 dark:text-gray-100 rounded-b-xl p-8 overflow-y-auto">
+            <div 
+                className="justify-start items-start flex flex-col bg-white dark:bg-gray-800 dark:text-gray-100 rounded-b-xl p-8 overflow-y-auto
+                cursor-default"
+            >
                 {children}
             </div>
         </motion.div>

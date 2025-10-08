@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import EmptyGridSlot from "./EmptyGridSlot";
+import Resume from "./Resume";
 
 const handleCopyEmail = (event) => {
     event.preventDefault();
@@ -71,6 +72,7 @@ const Navbar = ({onIconClick}) => {
                             </a>
                         </div>
                     </div>
+                    <Resume/>
                 </div>
                 {/*About me contents*/}
                 <div className="p-8">
