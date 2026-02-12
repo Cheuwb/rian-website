@@ -1,1 +1,1 @@
-https://cheuwb.github.io/rian-website/
+cheuwb.github.io
